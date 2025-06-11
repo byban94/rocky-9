@@ -15,7 +15,7 @@ jobs:
           repository: byban94/web
           ref: main
           path: web-src
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.WEB_TOKEN }}
 
       # Ištrink senus failus ir nukopijuok naujus su visais pavadinimais
       - name: Deploy web files
