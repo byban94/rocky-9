@@ -1,18 +1,25 @@
-name: Deploy to Homelab
+name: Deploy byban94/web to Apache
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch: # arba naudok push, jei nori automatikos
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: self-hosted
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: sudo dnf install -y httpd
-      - name: Deploy web page
+      # Checkout tavo privatu web repo
+      - name: Checkout web repo
+        uses: actions/checkout@v4
+        with:
+          repository: byban94/web
+          ref: main
+          path: web-src
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      # Ištrink senus failus ir nukopijuok naujus su visais pavadinimais
+      - name: Deploy web files
         run: |
-          echo "Automatinis diegimas veikia!" | sudo tee /var/www/html/index.html
-          sudo systemctl enable --now httpd
+          sudo rm -rf /var/www/html/*
+          sudo cp -r web-src/* /var/www/html/
+          sudo chown -R apache:apache /var/www/html/
